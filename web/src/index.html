@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Mi Página</title>
+	<style>
+		/* Estilos para botones */
+		.botones {
+			background-color: #4CAF50;
+			/* color de fondo verde */
+			border: none;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 7px;
+			/* bordes redondeados */
+		}
+
+		/* Estilos para otros elementos */
+		h1 {
+			color: #4CAF50;
+			/* color verde */
+			font-size: 36px;
+			text-align: center;
+		}
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		#datos-container {
+			display: flex;
+			align-items: center;
+			margin: 20px;
+			padding: 20px;
+			border: 1px solid #4CAF50;
+			/* borde verde */
+			border-radius: 7px;
+			/* bordes redondeados */
+		}
+
+		#fotodiv {
+			width: 100px;
+			height: 100px;
+			border-radius: 50%;
+			/* bordes redondeados */
+			background-color: #ccc;
+			margin-right: 20px;
+		}
+
+		#fotodiv img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			border-radius: 50%;
+			/* bordes redondeados */
+		}
+
+		label {
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		input {
+			padding: 10px;
+			font-size: 16px;
+			border-radius: 5px;
+			/* bordes redondeados */
+			border: 1px solid #ccc;
+			width: 97%;
+			margin-bottom: 20px;
+		}
+
+		/* Estilos para la ventana modal */
+		.modal {
+			display: none;
+			/* oculta la ventana modal */
+			position: fixed;
+			z-index: 1;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.4);
+			
+			/* fondo semitransparente */
+		}
+
+		.modal-content {
+			background-color: #fefefe;
+			margin: 15% auto;
+			padding: 20px;
+			border: 1px solid #888;
+			width: 80%;
+			border-radius: 10px;
+			/* bordes redondeados */
+			max-width: 500px;
+			min-width: 300px;
+		}
+
+		.modal h2 {
+			margin-top: 0;
+		}
+
+		.modal button {
+			margin-top: 20px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>Datos Ramdoms </h1>
+	<button class="botones"> <a href="http://localhost:3080/"> Registrar </a></button>
+	<script>
+
+        //Modal para ver hacer una modificacion de los contenidos 
+		function mostrarModal(idDatos){
+			// Crear la ventana modal
+			const modal = document.createElement("div");
+			modal.classList.add("modal");
+
+			// Agregar contenido a la ventana modal
+			const modalContent = document.createElement("div");
+			modalContent.classList.add("modal-content");
+
+			const titulo = document.createElement("h2");
+			titulo.innerText = "Editar datos";
+			modalContent.appendChild(titulo);
+
+			const nombreLabel = document.createElement("label");
+			nombreLabel.innerText = "Nombre:";
+			const nombreInput = document.createElement("input");
+			nombreInput.setAttribute("type", "text");
+            nombreInput.setAttribute("id","nombreInput");
+			modalContent.appendChild(nombreLabel);
+			modalContent.appendChild(nombreInput);
+
+
+			const edadLabel = document.createElement("label");
+			edadLabel.innerText = "Edad:";
+			const edadInput = document.createElement("input");
+			edadInput.setAttribute("type", "text");
+            edadInput.setAttribute("id","edadInput");
+			modalContent.appendChild(edadLabel);
+			modalContent.appendChild(edadInput);
+
+			const gmailLabel = document.createElement("label");
+			gmailLabel.innerText = "Gmail:";
+			const gmailInput = document.createElement("input");
+			gmailInput.setAttribute("type", "text");
+            gmailInput.setAttribute("id","gmailInput");
+			modalContent.appendChild(gmailLabel);
+			modalContent.appendChild(gmailInput);
+
+
+            // create the bottoms to save and send the data
+			const guardarBtn = document.createElement("button");
+			guardarBtn.innerText = "Guardar";
+			guardarBtn.classList.add("botones");
+			
+            // the action of the click 
+            guardarBtn.addEventListener("click", () => {
+				
+                let url = "http://localhost:3080/api/datos/new/" + idDatos;
+
+                // the data 
+                var Persona = {
+                    "Id":    idDatos,
+                    "Name":  nombreInput.value,
+                    "Age":   parseInt(edadInput.value),
+                    "Gmail": gmailInput.value,
+                }
+                
+                let options = {
+                    method : "PUT",
+                    body: JSON.stringify(Persona)
+                }
+            
+                fetch(url , options)
+                    .then(response => console.log(response.status))
+        
+
+                alert("Datos Modificados Con Exito :\n\n" + JSON.stringify(Persona, null, 4));
+			
+                // y cerrar la ventana modal
+				modal.style.display = "none";
+
+                // load  the page
+                window.location.reload(true);
+
+			});
+
+			modalContent.appendChild(guardarBtn);
+			modal.appendChild(modalContent);
+
+			// Agregar la ventana modal al cuerpo del documento
+			document.body.appendChild(modal);
+
+			// Mostrar la ventana modal
+			modal.style.display = "block";
+		}
+   
+
+        function deleteUsers(idData){
+            
+			     
+			fetch('http://localhost:3080/api/datos/delete/' + idData ,{
+				method:"DELETE",
+			})
+			.then(res => res.json)
+			.then(res => console.log(res))
+
+			window.location.reload(true);
+			
+        }
+
+
+
+		fetch('http://localhost:3080/api/datos')
+			.then(response => response.json())
+			.then(data => {
+				const contenedorGeneral = document.createElement("div");
+				document.body.appendChild(contenedorGeneral);
+
+				data.forEach(dato => {
+					const datosContainer = document.createElement("div");
+					datosContainer.id = "datos-container";
+					contenedorGeneral.appendChild(datosContainer);
+
+					const fotoDiv = document.createElement("div");
+					fotoDiv.id = "fotodiv";
+					datosContainer.appendChild(fotoDiv);
+
+					const listaDatos  = document.createElement("ul");
+					const nombreLi    = document.createElement("li");
+					const nombreSpan1 = document.createElement("span");
+					const nombreSpan2 = document.createElement("span");
+					const edadLi      = document.createElement("li");
+					const edadSpan1   = document.createElement("span");
+					const edadSpan2   = document.createElement("span");
+					const gmailLi     = document.createElement("li");
+					const gmailSpan1  = document.createElement("span");
+					const gmailSpan2  = document.createElement("span");
+
+					nombreSpan1.innerText =  "Nombre:";
+					nombreSpan2.innerText =  dato.Name;
+					edadSpan1.innerText   =  "Edad:";
+					edadSpan2.innerText   =  dato.Age;
+					gmailSpan1.innerText  =  "Gmail:";
+					gmailSpan2.innerText  =  dato.Gmail;
+
+					nombreLi.appendChild(nombreSpan1);
+					nombreLi.appendChild(nombreSpan2);
+					edadLi.appendChild(edadSpan1);
+					edadLi.appendChild(edadSpan2);
+					gmailLi.appendChild(gmailSpan1);
+					gmailLi.appendChild(gmailSpan2);
+
+
+					listaDatos.appendChild(nombreLi);
+					listaDatos.appendChild(edadLi);
+					listaDatos.appendChild(gmailLi);
+
+					datosContainer.appendChild(fotoDiv);
+					datosContainer.appendChild(listaDatos);
+
+
+					const borrarBtn = document.createElement("button");
+					borrarBtn.innerText = "Borrar";
+					borrarBtn.classList.add("botones");
+					datosContainer.appendChild(borrarBtn);
+                    borrarBtn.addEventListener("click",deleteUsers);
+
+					const editarBtn = document.createElement("button");
+					editarBtn.innerText = "Editar";
+                    editarBtn.setAttribute("type","button")
+					editarBtn.classList.add("botones");
+					datosContainer.appendChild(editarBtn);
+                    
+                    // call the modal window to the button to edit 
+                    editarBtn.addEventListener("click", function(){
+                        mostrarModal(dato.Id);
+                    });
+
+                    // Call the button to delete 
+                    borrarBtn.addEventListener("click", function(){
+                        deleteUsers(dato.Id);
+						alert("Data Deleted")
+                    });
+
+				});
+			});
+
+
+	</script>
+</body>
