@@ -2,30 +2,30 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
-	_ "github.com/lib/pq"
+    "time"
+    "context"
 )
 
-const (
-	DB_USER     = "root"
-	DB_PASSWORD = "admin"
-	DB_NAME     = "rest_api"
-	DB_HOST     = "localhost"
-	DB_PORT     = 5432
-)
+func openDB( addr string, maxOpenConns, maxIdleConns int, maxIdleTime string ) (*sql.DB, error) {
 
-func openDB() (*sql.DB, error) {
-
-	dns := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
-
-	db, err := sql.Open("postgres", dns)
+	db, err := sql.Open("postgres", addr)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = db.Ping(); err != nil {
+    db.SetMaxOpenConns(maxOpenConns)
+	db.SetMaxIdleConns(maxIdleConns)
+
+    duration, err := time.ParseDuration(maxIdleTime)
+	if err != nil {
+		return nil, err
+	}
+	db.SetConnMaxIdleTime(duration)
+    
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+    if err = db.PingContext(ctx); err != nil {
 		return nil, err
 	}
 
