@@ -18,5 +18,5 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("PUT /api/data/{id}", app.putData)
 	mux.HandleFunc("DELETE /api/data", app.deleteData)
 
-	return mux
+	return app.logRequest(mux)
 }

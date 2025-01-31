@@ -4,11 +4,13 @@ import (
 	"net/http"
 	"simple-res-api/internal/store"
 	"time"
+    "log"
 )
 
 type application struct {
-	config config
-	store  store.Storage
+	config   config
+	store    store.Storage
+    infoLog  *log.Logger 
 }
 
 type dbConfig struct {

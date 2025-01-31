@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+    "log"
+    "os"
 	"simple-res-api/internal/db"
 	"simple-res-api/internal/store"
 )
@@ -11,6 +13,8 @@ func main() {
 
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	dns := flag.String("db-dsn", "postgres://root:admin@localhost/rest_api?sslmode=disable", "PostgreSQL DSN")
+
+    infoLog := log.New(os.Stdout , "INFO\t" , log.Ldate | log.Ltime ); 
 
 	conf := &config{
 		addr: *addr,
@@ -36,6 +40,7 @@ func main() {
 	app := &application{
 		config: *conf,
 		store:  store,
+        infoLog: infoLog,
 	}
 
 	mux := app.routes()
