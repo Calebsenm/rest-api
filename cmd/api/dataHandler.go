@@ -1,29 +1,32 @@
-package main 
+package main
 
-import(
-	"net/http"
+import (
 	"encoding/json"
-	"simple-res-api/internal/store"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
+func (app *application) getData(w http.ResponseWriter, r *http.Request) {
 
-// Codificar los datos de la variable  como JSON y enviarlos como respuesta
-func (app *application )getData(w http.ResponseWriter, r *http.Request) {
-	
-	users := store.Get();
-	
-	// renderizado
-	err1 := json.NewEncoder(w).Encode(Users)
+	users, err := app.store.Users.Get()
+	if err != nil {
+		return
+	}
 
-	if err1 != nil {
-		http.Error(w, err1.Error(), http.StatusInternalServerError)
+	err = json.NewEncoder(w).Encode(users)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 }
 
 // the function going to get the data for the id and return  the data
-func (app *application )getDataById(w http.ResponseWriter, r *http.Request) {
+func (app *application) getDataById(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
 		return
@@ -62,9 +65,8 @@ func (app *application )getDataById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 // Modificar los datos en la tabla
-func (app *application )postData(w http.ResponseWriter, r *http.Request) {
+func (app *application) postData(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Metodo no permitido", http.StatusMethodNotAllowed)
@@ -109,7 +111,7 @@ func (app *application )postData(w http.ResponseWriter, r *http.Request) {
 }
 
 // para el metodo put y modificar los datos
-func (app *application )putData(w http.ResponseWriter, r *http.Request) {
+func (app *application) putData(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Metoodo no permitido", http.StatusMethodNotAllowed)
 	}
@@ -154,26 +156,26 @@ func (app *application )putData(w http.ResponseWriter, r *http.Request) {
 }
 
 // for delete the users
-func (app *application )deleteData(w http.ResponseWriter, r *http.Request) {
+func (app *application) deleteData(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Metodo no permitido", http.StatusMethodNotAllowed)
 	}
 
 	path := r.URL.Path
 	// dividir la ruta en segmentos separados por "/"
-	segments := strings.Split(path,"/")
+	segments := strings.Split(path, "/")
 	// el numero se encuentra en el ultimo segmento
 	numString := segments[len(segments)-1]
-	
-	id , err := strconv.Atoi(numString)
-	
+
+	id, err := strconv.Atoi(numString)
+
 	dataBase, _ := db.ConnectPostgres()
 	defer dataBase.Close()
 
-	data, err := dataBase.Exec("DELETE FROM persona WHERE id=$1",id );
+	data, err := dataBase.Exec("DELETE FROM persona WHERE id=$1", id)
 
 	if err != nil {
-		fmt.Println("Error 2",err)
+		fmt.Println("Error 2", err)
 	}
 
 	fmt.Println(data)

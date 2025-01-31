@@ -1,12 +1,14 @@
-package main 
+package main
 
-import(
-    "net/http"
+import (
+	"net/http"
+	"simple-res-api/internal/store"
+	"time"
 )
 
-
-type aplication struct{
-        
+type application struct {
+	config config
+	store  store.Storage
 }
 
 type dbConfig struct {
@@ -24,7 +26,20 @@ type config struct {
 	frontendURL string
 }
 
-func (app *aplication) run( mux http.Handler) error  {
-   
-    return nil 
+func (app *application) run(mux http.Handler) error {
+
+	srv := &http.Server{
+		Addr:         app.config.addr,
+		Handler:      mux,
+		WriteTimeout: time.Second * 30,
+		ReadTimeout:  time.Second * 10,
+		IdleTimeout:  time.Minute,
+	}
+
+	err := srv.ListenAndServe()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
