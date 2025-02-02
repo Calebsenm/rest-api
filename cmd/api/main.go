@@ -12,7 +12,7 @@ import (
 func main() {
 
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dns := flag.String("db-dsn", "postgres://root:admin@localhost/rest_api?sslmode=disable", "PostgreSQL DSN")
+	dns := flag.String("db-dsn", "postgres://root:admin@localhost/persona?sslmode=disable", "PostgreSQL DSN")
 
     infoLog := log.New(os.Stdout , "INFO\t" , log.Ldate | log.Ltime ); 
 
@@ -34,8 +34,11 @@ func main() {
 		fmt.Errorf(err.Error())
 	}
 	defer db.Close()
-
-	store := store.NewStorage(db)
+    
+    fmt.Println("database connection pool established")
+    fmt.Println("Server is running in localhost 4000")
+	
+    store := store.NewStorage(db)
 
 	app := &application{
 		config: *conf,
@@ -51,5 +54,4 @@ func main() {
 		fmt.Errorf(err.Error())
 	}
 
-	fmt.Println("Server is running in localhost 3080")
 }

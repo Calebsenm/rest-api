@@ -15,11 +15,11 @@ var (
 
 type Storage struct {
 	Users interface {
-		Get() ([]User, error)
+		Get(context.Context) ([]User, error)
 		GetByID(context.Context, int64) (*User, error)
 		Create(context.Context, *User) error
 		Delete(context.Context, int64) error
-		Update(context.Context, *User) error
+		Update(context.Context, int64, *User) error
 	}
 }
 
