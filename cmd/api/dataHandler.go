@@ -8,7 +8,6 @@ import (
 
 
 func (app *application) getData(w http.ResponseWriter, r *http.Request) {
-
 	users, err := app.store.Users.Get(r.Context())
 	if err != nil {
 		return
@@ -17,7 +16,7 @@ func (app *application) getData(w http.ResponseWriter, r *http.Request) {
 	if err := app.jsonResponse(w, http.StatusOK, users); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-
+    
 }
 
 func (app *application) getDataById(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +47,7 @@ func (app *application) postData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := app.jsonResponse(w, http.StatusNoContent, ""); err != nil {
+	if err := app.jsonResponse(w, http.StatusNoContent, user); err != nil {
 		writeJSONError(w, http.StatusInternalServerError, "the server encountered a problem")
 	}
 }
@@ -68,10 +67,11 @@ func (app *application) putData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := app.store.Users.Update(r.Context(), id , &user ); err != nil {
-		return
+		writeJSONError(w, http.StatusInternalServerError,"Error at update user")
+        return
 	}
 
-	if err := app.jsonResponse(w, http.StatusNoContent, ""); err != nil {
+	if err := app.jsonResponse(w, http.StatusNoContent, user); err != nil {
 		writeJSONError(w, http.StatusInternalServerError, "the server encountered a problem")
 	}
 
@@ -88,7 +88,8 @@ func (app *application) deleteData(w http.ResponseWriter, r *http.Request) {
 
 	err = app.store.Users.Delete(r.Context(), id)
 	if err != nil {
-		return
+		writeJSONError(w, http.StatusInternalServerError, "Error")
+        return
 	}
 
 	if err := app.jsonResponse(w, http.StatusOK, ""); err != nil {

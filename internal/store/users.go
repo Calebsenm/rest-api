@@ -22,17 +22,17 @@ func (d *UserStore) Get(ctx context.Context) ([]User, error) {
 
 	var query string = `SELECT * FROM persona`
 
-	data, err := d.db.Query(query)
+	rows , err := d.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 
-	defer data.Close()
+	defer rows.Close()
 
 	var users []User
-	for data.Next() {
+	for rows.Next() {
 		var p User
-		err := data.Scan(&p.Id, &p.Name, &p.Age, &p.Gmail)
+		err := rows.Scan(&p.Id, &p.Name, &p.Age, &p.Gmail)
 
 		if err != nil {
 			return nil, err
@@ -97,7 +97,7 @@ func (d *UserStore) Create(ctx context.Context, user *User) error {
 }
 
 func (d *UserStore) Delete(ctx context.Context, userID int64) error {
-	query := `DELETE FROM posts WHERE id = $1`
+	query := `DELETE FROM persona WHERE id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
@@ -122,20 +122,23 @@ func (d *UserStore) Delete(ctx context.Context, userID int64) error {
 
 func (d *UserStore) Update(ctx context.Context, id int64 ,user *User) error {
 	query := `
-		UPDATE persona SET name = $1 , age = $2, gmail =$3 )
+		UPDATE persona 
+        SET name = $1 , age = $2, gmail =$3
 		WHERE id=$4
 	`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	 err := d.db.QueryRowContext (
+    _ ,  err := d.db.ExecContext(
 		ctx,
 		query,
 		user.Name, 
         user.Age,
 		user.Gmail,
-	).Scan(&id)
+        id,
+	)
+    
 
     if err != nil {
         return err  
