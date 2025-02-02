@@ -1,24 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Registro</title>
-    <script src="index.js"></script>
-
-    <link rel="stylesheet" href="style.css">
+    <title>Register Form</title>
+    
+    <script src="web/index.js"></script>
+    <link rel="stylesheet" href="web/style.css">
 </head>
-
-<body>
-  
-    <h1>Formulario de Registro</h1>
-    <form   onsubmit="buttonClick(event)" id="Formularios"  method="POST"  " >
-        <div>
-            <label for="Id" >ID:</label>
-            <input type="text" id="Id" name="Id">
-        </div>
+<body>  
+    <h1> Register User </h1>
+    <form onsubmit="buttonClick(event)" id="Formularios"  method="POST" ">
         <div>
             <label for="nombre">Nombre:</label>
             <input type="text" id="Nombre" name="Nombre">
@@ -32,19 +25,19 @@
             <input type="text" id="gmail" name="gmail">
         </div>
         <input type="submit" name="Registrarse" id="button" value="Registro">
-    
 
         <div id="contenedor"> 
         </div>
-        <button class="botones"> <a href="http://localhost:3080/home">Ver Datos </a></button>
-    
+        
+        <button class="botones"> 
+            <a href="http://localhost:4000/web/user.html">Ver Datos </a>
+        </button>
     </form>
 
     <footer>
         <div>
-            © 2023 - Todos los derechos reservados - <a href="#">Política de privacidad</a>
+            <p> Nothing </p>  
         </div>
     </footer>
-
 </body>
 </html>
