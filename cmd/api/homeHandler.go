@@ -8,7 +8,7 @@ import (
 
 func (app *application) home(w http.ResponseWriter, r *http.Request){
 
-	tmpl, err := template.ParseFiles("./web/index.html")
+	tmpl, err := template.ParseFiles("./ui/html/main.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
