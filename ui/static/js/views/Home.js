@@ -6,8 +6,7 @@ export function Home() {
     return `
         ${Header()}
         <div class="home">
-            <h1>Bienvenido a la página de inicio</h1>
-            <button data-action="goToAbout">Ir a About</button>
+            <h1>Home</h1>
         </div>
         ${Footer()}
     `;

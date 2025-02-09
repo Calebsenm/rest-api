@@ -1,6 +1,7 @@
 
 import { Home } from './views/Home.js';
 import { About } from './views/About.js';
+import { renderBefore } from './App.js';
 import { Contact } from './views/Contact.js';
 
 const routes = {
@@ -13,5 +14,5 @@ export function router() {
     const path = window.location.pathname;
     const page = routes[path] || Home; 
 
-    render(page());
+    renderBefore(page());
 }

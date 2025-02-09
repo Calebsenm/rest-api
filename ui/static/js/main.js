@@ -1,6 +1,6 @@
-document.write('hello')
+//document.write('hello')
 
-//import { initApp } from './App.js';
+import { initApp } from './App.js';
 
-//document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', initApp);
 

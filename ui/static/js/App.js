@@ -1,9 +1,20 @@
 
 import { router } from './router.js';
+import { Home } from './views/Home.js';
+import { About } from './views/About.js';
+import { Contact } from './views/Contact.js';
 
-function render(html) {
+
+export function render(html) {
     const root = document.getElementById('root');
-    root.innerHTML = html; 
+    root.insertAdjacentHTML('afterend',  html) ; 
+    setupEventListeners();
+}
+
+
+export function renderBefore(html) {
+    const root = document.getElementById('root');
+    root.insertAdjacentHTML('afterend',  html) ; 
     setupEventListeners();
 }
 
@@ -30,13 +41,11 @@ function setupEventListeners() {
     });
 }
 
-// Exportar la función para inicializar la aplicación
-export function initApp() {
-    // Renderizar la vista inicial
-    router();
 
-    // Manejar el evento de cambio de ruta
-    window.onpopstate = router;
+export function initApp() {
+
+    router();
+    window.onpopstate = render;
 }
 
 
