@@ -9,14 +9,15 @@ const updateStatus = (element, type, message) => {
 window.buttonClick = async (event) => {
   event.preventDefault();
   const container = document.getElementById('contenedor');
-  const formData = new FormData(event.target.form);
+  const formData = new FormData(event.target);
 
   const nombre = formData.get('nombre');
   const edad = parseInt(formData.get('edad'));
   const gmail = formData.get('gmail');
 
   if (!nombre || !edad || !gmail) {
-    window.alert(nombre , edad , gmail )
+    window.alert(nombre)
+    
     return updateStatus(container, 'error', 'Complete todos los datos');
   }
 
